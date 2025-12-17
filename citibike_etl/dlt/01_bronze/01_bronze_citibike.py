@@ -1,12 +1,8 @@
+import dlt
 from pyspark.sql.types import StructType, StructField, StringType, DecimalType, TimestampType
-from pyspark.sql.functions import create_map, lit
-import sys
 
-pipeline_id = sys.argv[1]
-run_id = sys.argv[2]
-task_id = sys.argv[3]
-processed_timestamp = sys.argv[4]
-catalog = sys.argv[5]
+
+catalog = spark.conf.get("catalog")
 
 schema = StructType([
     StructField("ride_id", StringType(), True),
@@ -24,17 +20,14 @@ schema = StructType([
     StructField("member_casual", StringType(), True), 
 ])
 
-df = spark.read.csv(f"/Volumes/{catalog}/00_landing/source_citybike_data/JC-202503-citibike-tripdata.csv", schema=schema, header=True)
-
-df = df.withColumn("metadata", 
-              create_map(
-                  lit("pipeline_id"), lit(pipeline_id),
-                  lit("run_id"), lit(run_id),
-                  lit("task_id"), lit(task_id),
-                  lit("processed_date"), lit(processed_timestamp)
-                  ))
-
-df.write.\
-    mode("overwrite").\
-    option("overwriteSchema", "true").\
-    saveAsTable(f"{catalog}.01_bronze.jc_citibike")
+@dlt.table(
+    comment="Bronze layer: raw Citi Bike data with ingest metadata"
+)
+def bronze_jc_citibike():
+    df = (
+        spark.read
+             .schema(schema)
+             .csv(f"/Volumes/{catalog}/00_landing/source_citybike_data/JC-202503-citibike-tripdata.csv",
+                  header=True)
+    )
+    return df

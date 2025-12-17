@@ -1,7 +1,7 @@
 resources:
   pipelines:
-    pipeline_citibike_etl_pipeline:
-      name: citibike_etl_pipeline
+    pipeline_etl_citibike_etl_pipeline_nb:
+      name: citibike_etl_pipeline_nb
       configuration:
         catalog: "${var.catalog}"
       libraries:

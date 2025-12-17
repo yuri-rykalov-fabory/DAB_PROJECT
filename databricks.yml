@@ -8,7 +8,7 @@ include:
 
 variables:
   catalog:
-    default: "citibike_dev"
+    default: "citybike_dev"
   dev_flag:
     default: true
 
@@ -21,38 +21,21 @@ targets:
     mode: development
     default: true
     workspace:
-      host: your-workspace-url # replace with your Workspace URL
+      host: https://adb-203334270139854.14.azuredatabricks.net # replace with your Workspace URL
 
-  test:
+  ACCEPTANCE:
     mode: production
     variables:
       catalog:
-        default: "citibike_test"
+        default: "citybike_acc"
       dev_flag:
         default: false
     presets:
-      name_prefix: '[testing] '
+      name_prefix: '[acc] '
     workspace:
-      host: your-workspace-url # replace with your Workspace URL
+      host: https://adb-73526014309792.12.azuredatabricks.net # replace with your Workspace URL
       root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
+      file_path: ${workspace.root_path}/files
     permissions:
-      - service_principal_name: your-service-principal-name # update with your service principal name
+      - user_name: yuri.rykalov@fabory.com # update with your service principal name
         level: CAN_MANAGE
-    run_as:
-      service_principal_name: your-service-principal-name # update with your service principal name
-
-  prod:
-    mode: production
-    variables:
-      catalog:
-        default: "citibike_prod"
-      dev_flag:
-        default: false
-    workspace:
-      host: your-workspace-url # replace with your Workspace URL
-      root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
-    permissions:
-      - service_principal_name: your-service-principal-name # update with your service principal name
-        level: CAN_MANAGE
-    run_as:
-      service_principal_name: your-service-principal-name # update with your service principal name
