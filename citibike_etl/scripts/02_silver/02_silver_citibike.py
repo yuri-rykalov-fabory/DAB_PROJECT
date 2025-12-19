@@ -14,7 +14,6 @@ catalog = sys.argv[5]
 df = spark.read.table(f"{catalog}.01_bronze.jc_citibike")
 
 df = get_trip_duration_mins(spark, df, "started_at", "ended_at", "trip_duration_mins")
-
 df = timestamp_to_date_col(spark, df, "started_at", "trip_start_date")
 
 df = df.withColumn("metadata", 

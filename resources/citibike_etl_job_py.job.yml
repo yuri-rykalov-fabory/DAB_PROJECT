@@ -1,10 +1,9 @@
 resources:
   jobs:
-    citibike_etl_job_py:
-      name: citibike_etl_job_py
-      
+    citibike_job_py:
+      name: citibike_job_py
       tasks:
-        - task_key: 01_bronze_citibike
+        - task_key: 01_bronze_citybike
           spark_python_task:
             python_file: ../citibike_etl/scripts/01_bronze/01_bronze_citibike.py
             parameters:
@@ -13,12 +12,11 @@ resources:
               - "{{task.run_id}}"
               - "{{job.start_time.iso_datetime}}"
               - "${var.catalog}"
-            source: WORKSPACE
           environment_key: Default
 
-        - task_key: 02_silver_citibike
+        - task_key: 02_silver_citybike
           depends_on:
-            - task_key: 01_bronze_citibike
+            - task_key: 01_bronze_citybike
           spark_python_task:
             python_file: ../citibike_etl/scripts/02_silver/02_silver_citibike.py
             parameters:
@@ -27,34 +25,34 @@ resources:
               - "{{task.run_id}}"
               - "{{job.start_time.iso_datetime}}"
               - "${var.catalog}"
-            source: WORKSPACE
           environment_key: Default
 
         - task_key: 03_gold_citibike_daily_ride_summary
           depends_on:
-            - task_key: 02_silver_citibike
+            - task_key: 02_silver_citybike
           spark_python_task:
             python_file: ../citibike_etl/scripts/03_gold/03_gold_citibike_daily_ride_summary.py
             parameters:
               - "${var.catalog}"
-            source: WORKSPACE
           environment_key: Default
 
         - task_key: 03_gold_citibike_daily_station_performance
           depends_on:
-            - task_key: 02_silver_citibike
+            - task_key: 02_silver_citybike
           spark_python_task:
             python_file: ../citibike_etl/scripts/03_gold/03_gold_citibike_daily_station_performance.py
             parameters:
               - "${var.catalog}"
-            source: WORKSPACE
           environment_key: Default
+
       queue:
         enabled: true
+
       environments:
         - environment_key: Default
           spec:
-            environment_version: "4"
+            client: "1"
             dependencies:
               - ../dist/*.whl
+
       performance_target: PERFORMANCE_OPTIMIZED
