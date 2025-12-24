@@ -1,0 +1,44 @@
+name: CD Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cd-deploy-acc:
+    name: Deploy to ACCEPTANCE
+    runs-on: ubuntu-latest
+    environment: ACCEPTANCE
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Databricks CLI
+        run: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/istall.sh | sh
+
+      - name: Install Dependancies
+        run: |
+          pip install --upgrade pip
+          pip install setuptools wheel
+
+      - name: Configure Databricks
+        run: |
+          cat <<EOF > ~/.databrickscfg
+          [ACCEPTANCE]
+          host  = https://adb-73526014309792.12.azuredatabricks.net
+          azure_client_id = ${{ secrets.AZURE_CLIENT_ID}}
+          azure_tenant_id = ${{ secrets.AZURE_TENANT_ID}}
+          azure_client_secret = ${{ secrets.AZURE_CLIENT_SECRET}}
+          EOF
+
+      - name: Deploy to ACCEPTANCE
+        run: |
+          databricks bundle deploy \
+            --target ACCEPTANCE
+            --profile ACCEPTANCE
