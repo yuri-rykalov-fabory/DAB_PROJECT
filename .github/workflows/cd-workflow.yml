@@ -39,6 +39,7 @@ jobs:
 
       - name: Deploy to ACCEPTANCE
         run: |
-          databricks bundle deploy
-          --target ACCEPTANCE 
+          databricks bundle deploy \
+          --target ACCEPTANCE \
           --profile ACCEPTANCE
+
