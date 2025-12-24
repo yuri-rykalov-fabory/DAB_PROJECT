@@ -37,5 +37,7 @@ targets:
       root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
       file_path: ${workspace.root_path}/files
     permissions:
-      - user_name: yuri.rykalov@fabory.com # update with your service principal name
+      - service_principal_name: 4b487b97-9cee-4ed3-b279-1a5f41ca1c09 # update with your service principal name
         level: CAN_MANAGE
+    run_as:
+      service_principal_name: 4b487b97-9cee-4ed3-b279-1a5f41ca1c09 # update with your service principal name
