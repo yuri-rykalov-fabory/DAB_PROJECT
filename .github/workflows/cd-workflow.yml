@@ -20,7 +20,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install Databricks CLI
-        run: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/istall.sh | sh
+        run: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
       - name: Install Dependancies
         run: |
@@ -39,4 +39,6 @@ jobs:
 
       - name: Deploy to ACCEPTANCE
         run: |
-          databricks bundle deploy --target ACCEPTANCE --profile ACCEPTANCE
+          databricks bundle deploy \
+          --target ACCEPTANCE 
+          --profile ACCEPTANCE
